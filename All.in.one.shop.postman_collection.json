@@ -1,0 +1,1067 @@
+{
+	"info": {
+		"_postman_id": "4377a8ee-f13a-452b-ac54-10ec459fdf9f",
+		"name": "All in one shop",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "pet creation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"petId\", jsonData.id); \r",
+							"  var jsonData = pm.response.json();\r",
+							"   pm.environment.set(\"name\", jsonData.category.name); \r",
+							"\r",
+							"pm.test(\"Successfully got POST request status code\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"var response = JSON.parse(responseBody);\r",
+							"tests[\" pet name is\" +jsonData.category.name] == jsonData.category.name;\r",
+							"if(jsonData.category.name != jsonData.name ){\r",
+							"    postman.setNextRequest(\"upload image\");}          \r",
+							"else{\r",
+							"   postman.setNextRequest(null);}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"{{$randomInt}}\",\r\n  \"category\": {\r\n    \"id\": \"{{$randomInt}}\",\r\n    \"name\": \"{{$randomFullName}}\"\r\n  },\r\n  \"name\": \"{{$randomFirstName}}\",\r\n  \"photoUrls\": [\r\n    \"{{$randomImageUrl}}\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": \"{{$randomInt}}\",\r\n      \"name\": \"{{$randomLastName}}\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/pet",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "upload image",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"image uploaded successfully\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"File uploaded\");\r",
+							"});\r",
+							"    postman.setNextRequest(\"get pet\");         \r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "multipart/form-data"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "additionalMetadata",
+							"value": "test",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"value": "@download.png;type=image/png",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/manikandanb/Music/Images/Windows-10-640x353.jpg",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/pet/{{petId}}/uploadImage",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"pet",
+						"{{petId}}",
+						"uploadImage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put pet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"   pm.environment.set(\"id\", jsonData.id); \r",
+							"\r",
+							"pm.test(\"pet updated\", function () {\r",
+							"    pm.expect(pm.response.text(\"\")).to.include(\"status\");\r",
+							"    pm.expect(pm.response.text(\"\")).to.include(\"id\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"var response = JSON.parse(responseBody);\r",
+							"tests[\" pet id\"+jsonData.id] == jsonData.id;\r",
+							"\r",
+							"if(jsonData.id == pm.environment.get(\"petId\")){\r",
+							"    postman.setNextRequest(\"pet ID\");}          \r",
+							"else{\r",
+							"   postman.setNextRequest(null);}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"{{petId}}\",\r\n  \"category\": {\r\n    \"id\": \"{{$randomInt}}\",\r\n    \"name\": \"{{$randomFullName}}\"\r\n  },\r\n  \"name\": \"{{$randomFirstName}}\",\r\n  \"photoUrls\": [\r\n    \"{{$randomImageUrl}}\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": \"{{$randomInt}}\",\r\n      \"name\": \"{{$randomLastName}}\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/pet",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get pet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"   pm.environment.set(\"id\", jsonData.id); \r",
+							"\r",
+							"pm.test(\"Status code activity is accepted\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							" var response = JSON.parse(responseBody);\r",
+							"tests[\" pet id\"+jsonData.id] == jsonData.id;\r",
+							"\r",
+							"if(jsonData.id == pm.environment.get(\"petId\")){\r",
+							"   postman.setNextRequest(\"Put pet\");}          \r",
+							"else{\r",
+							"   postman.setNextRequest(null);}\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/pet/{{petId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"pet",
+						"{{petId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "status check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"let status = pm.response.to.have.status(\"OK\");\r",
+							"if( status = 200 ){\r",
+							"    console.log('console got exact output 200');}\r",
+							"else if (status > 200){\r",
+							" console.log('console got below 200');}\r",
+							"else{\r",
+							" console.log('console got above 200');}\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});\r",
+							"\r",
+							"    postman.setNextRequest(\"new user list\");        \r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/pet/findByStatus?status=sold",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"pet",
+						"findByStatus"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "pending",
+							"disabled": true
+						},
+						{
+							"key": "status",
+							"value": "available",
+							"disabled": true
+						},
+						{
+							"key": "status",
+							"value": "sold"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update a pet in store data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"pm.test(\"updated pet\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"200\");\r",
+							"});\r",
+							"var response = JSON.parse(responseBody);\r",
+							"tests[\" pet is updated\"] = response.code == \"200\"; \r",
+							"if(response.code == \"200\"){\r",
+							"    postman.setNextRequest(\"status check\");}          \r",
+							"else{\r",
+							"   postman.setNextRequest(null);}\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "jes",
+							"type": "text"
+						},
+						{
+							"key": "status",
+							"value": "sold",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet/{{petId}}",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"{{petId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pet ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"   pm.environment.set(\"id\", jsonData.id); \r",
+							"\r",
+							"pm.test(\"ID was matched\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"id\");\r",
+							"});\r",
+							"var response = JSON.parse(responseBody);\r",
+							"tests[\" ID is\" +jsonData.id] == jsonData.id;\r",
+							"\r",
+							"if(jsonData.id == pm.environment.get(\"petId\")){\r",
+							"    postman.setNextRequest(\"update a pet in store data\");}          \r",
+							"else{\r",
+							"   postman.setNextRequest(null);}\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/pet/{{petId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"pet",
+						"{{petId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete pet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(\"pet deleted successfully\");\r",
+							"\r",
+							"\r",
+							"postman.setNextRequest(\"createWithArray\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/pet/{{petId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"pet",
+						"{{petId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Order access - returns pet inventories by status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"pm.test(\"store order status\", function () {\r",
+							"    pm.expect(pm.response.text(\"\")).to.include(\"sold\");\r",
+							"    pm.expect(pm.response.text(\"\")).to.include(\"pending\");\r",
+							"    pm.expect(pm.response.text(\"\")).to.include(\"available\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"postman.setNextRequest(\"place order\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/store/inventory",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"store",
+						"inventory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "place order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"orderId\", jsonData.id); \r",
+							"console.log(jsonData.id)\r",
+							"\r",
+							"pm.test(\" order placed\", function () {\r",
+							"    pm.expect(pm.response.text(\"placed\")).to.include(\"status\");});\r",
+							"\r",
+							"var response = JSON.parse(responseBody);\r",
+							"tests[\" order placed id\"+ jsonData.id] ==jsonData.id; \r",
+							"if(jsonData.id == pm.environment.get(\"orderId\")){\r",
+							"    postman.setNextRequest(\"Get order ID\");}          \r",
+							"else{\r",
+							"   postman.setNextRequest(null);}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": {{$randomInt}},\n  \"petId\": {{petId}},\n  \"quantity\": {{$randomInt}},\n  \"shipDate\": \"2021-09-06T10:17:38.680Z\",\n  \"status\": \"placed\",\n  \"complete\": true\n}"
+				},
+				"url": {
+					"raw": "{{url}}/store/order",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"store",
+						"order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get order ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"pm.test(\"store order status\", function () {\r",
+							"    pm.expect(pm.response.text(\"\")).to.include(\"shipDate\");\r",
+							"    pm.expect(pm.response.text(\"\")).to.include(\"status\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"if(pm.environment.get(\"orderId\") !=\"0\"){\r",
+							"   postman.setNextRequest(\"del order\");}          \r",
+							"else{\r",
+							"   postman.setNextRequest(null);}\r",
+							"  \r",
+							"\r",
+							"   \r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/store/order/{{orderId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"store",
+						"order",
+						"{{orderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "del order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"order deleted successfully\", function () {\r",
+							"    pm.expect(pm.response.text(\"\")).to.include(\"200\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"postman.setNextRequest(\"delete pet\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/store/order/{{orderId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"store",
+						"order",
+						"{{orderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "new user list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successfully got POST request status code\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"pm.test(\"user created\", function () {\r",
+							"     pm.expect(pm.response.text()).to.include(\"200\");\r",
+							"    pm.expect(pm.response.text()).to.include(\"ok\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"var response = JSON.parse(responseBody);\r",
+							"tests[\" new user added\"] = response.code == \"200\";\r",
+							"\r",
+							"if(response.code == \"200\"){\r",
+							"    postman.setNextRequest(\"get user\");}          \r",
+							"else{\r",
+							"   postman.setNextRequest(null);}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n  {\r\n    \"id\": 3,\r\n    \"username\": \"vijay\",\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomFirstName}}\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"demo@123\",\r\n    \"phone\": \"{{$randomPhoneNumber}}\",\r\n    \"userStatus\": 0\r\n  }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/createWithList",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"createWithList"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"   pm.environment.set(\"username\", jsonData.username); \r",
+							"\r",
+							"pm.test(\"Status code is accepted\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"user found\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"username\");\r",
+							"    pm.expect(pm.response.text()).to.include(\"password\");\r",
+							"    pm.expect(pm.response.text()).to.include(\"id\");\r",
+							"});\r",
+							"var response = JSON.parse(responseBody);\r",
+							"tests[\" username is\" + jsonData.username] == jsonData.username == \"vijay\"; \r",
+							"\r",
+							"if(jsonData.username ==response.username){\r",
+							"    postman.setNextRequest(\"update user\");}          \r",
+							"else{\r",
+							"   postman.setNextRequest(null);}\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/user/vijay",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"vijay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"user profile updated\", function () {\r",
+							"    pm.expect(pm.response.text(\"\")).to.include(\"200\");\r",
+							"    pm.expect(pm.response.text(\"\")).to.include(\"3\");\r",
+							"});\r",
+							"var response = JSON.parse(responseBody);\r",
+							"tests[\" user updated message and code displayed\"] = response.message == \"3\";\r",
+							"\r",
+							"if(response.message == \"3\" && response.code ==\"200\"){\r",
+							"    postman.setNextRequest(\"login\");}          \r",
+							"else{\r",
+							"   postman.setNextRequest(null);}\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 3,\n    \"username\": \"vijay\",\n    \"firstName\": \"{{$randomFirstName}}\",\n    \"lastName\": \"{{$randomLastName}}\",\n    \"email\": \"{{$randomEmail}}\",\n    \"password\": \"demo@123\",\n    \"phone\": \"{{$randomPhoneNumber}}\",\n    \"userStatus\": 1\n}"
+				},
+				"url": {
+					"raw": "{{url}}/user/vijay",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"vijay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(\"user deleted successfully\");\r",
+							"postman.setNextRequest(\"logout\");\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/user/jack",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"jack"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.variables.set(\"username\", \"vijay\");\r",
+							"console.log(pm.variables.get(\"username\"));\r",
+							"\r",
+							"\r",
+							"pm.test(\"user login successfully\", function () {\r",
+							"     pm.expect(pm.response.text()).to.include(\"logged in user\");\r",
+							"     pm.expect(pm.response.text()).to.include(\"200\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"var response = JSON.parse(responseBody);\r",
+							"tests[\" user login alert message\"] = response.code == \"200\";\r",
+							"\r",
+							"if(response.code == \"200\"){\r",
+							" postman.setNextRequest(\"Order access - returns pet inventories by status\");}          \r",
+							"else{\r",
+							"   postman.setNextRequest(null);}\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/user/login?username=vijay&password=demo@123",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"login"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "vijay"
+						},
+						{
+							"key": "password",
+							"value": "demo@123"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"user logout successfully\", function () {\r",
+							"    pm.expect(pm.response.text(\"\")).to.include(\"200\");\r",
+							"    pm.expect(pm.response.text(\"\")).to.include(\"ok\");\r",
+							"});\r",
+							"\r",
+							"var response = JSON.parse(responseBody);\r",
+							"tests[\" user logout alert message\"] = response.message == \"ok\";\r",
+							"\r",
+							"if(response.message == \"ok\"){\r",
+							"   postman.setNextRequest(\"create user\"); }          \r",
+							"else{\r",
+							"   postman.setNextRequest(null);}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/user/logout",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createWithArray",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successfully got POST request status code\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"user created\", function () {\r",
+							"     pm.expect(pm.response.text()).to.include(\"200\");\r",
+							"    pm.expect(pm.response.text()).to.include(\"ok\");\r",
+							"});\r",
+							"\r",
+							"var response = JSON.parse(responseBody);\r",
+							"tests[\" user created successful\"] = response.code == \"200\";\r",
+							"\r",
+							"if(response.code == \"200\"){\r",
+							"    postman.setNextRequest(\"delete user\");}          \r",
+							"else{\r",
+							"   postman.setNextRequest(null);}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n  {\r\n    \"id\": 5,\r\n    \"username\": \"jack\",\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomFirstName}}\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"demo@123\",\r\n    \"phone\": \"{{$randomPhoneNumber}}\",\r\n    \"userStatus\": 0\r\n  }\r\n]"
+				},
+				"url": {
+					"raw": "{{url}}/user/createWithArray",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"createWithArray"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successfully got POST request status code\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"user created\", function () {\r",
+							"     pm.expect(pm.response.text()).to.include(\"200\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n  {\r\n    \"id\": 7,\r\n    \"username\": \"Harry\",\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"demo@123\",\r\n    \"phone\": \"{{$randomPhoneNumber}}\",\r\n    \"userStatus\": 1\r\n  }\r\n"
+				},
+				"url": {
+					"raw": "{{url}}/user",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"console.log(\"pre request is process\");",
+					"pm.request.headers.add({",
+					"key: 'Content-Type',",
+					"value: 'application/json'",
+					"});"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Status code is 200\", function () {",
+					"    pm.response.to.have.status(200);",
+					"});",
+					""
+				]
+			}
+		}
+	]
+}
